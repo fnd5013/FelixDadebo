@@ -17,6 +17,7 @@ import javafx.scene.control.Label;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import java.lang.Boolean;
 import model.Usermodel;
 /**
  *
@@ -85,7 +86,7 @@ public class FXMLDocumentController implements Initializable {
         return students;
     }
       public Usermodel readByFollowers(int Followers){
-        Query query = manager.createNamedQuery("Usermodel.findById");
+        Query query = manager.createNamedQuery("Usermodel.findByFollowers");
         
         // setting query parameter
         query.setParameter("Followers", Followers);
@@ -220,20 +221,11 @@ public class FXMLDocumentController implements Initializable {
         System.out.println("Enter Name:");
         String name = input.next();
         
-        System.out.println("Are you Active: Yes or No");
-        String ans = input.next();
-        boolean active = false;
+        System.out.println("Are you Active: TRUE or FALSE");
+        Boolean active =  input.nextBoolean();
         
-        if (ans.equalsIgnoreCase("y") || ans.equalsIgnoreCase("yes")){
-        active = true;
+       
         
-        }
-        else if(ans.equalsIgnoreCase("N") || ans.equalsIgnoreCase("No")) {
-            
-        active = false;
-
-        return;
-        }
         
         
         // create a student instance
@@ -247,6 +239,8 @@ public class FXMLDocumentController implements Initializable {
         // save this student to database by calling Create operation        
         create(user);
     }
+     
+       
 
 
     
@@ -258,6 +252,8 @@ public class FXMLDocumentController implements Initializable {
          // read input from command line
         System.out.println("Enter Followers:");
         int Followers = input.nextInt();
+        
+       
         
         Usermodel s = readByFollowers(Followers);
         System.out.println("we are deleting this student with this number of followers: "+ s.toString());
@@ -312,31 +308,19 @@ public class FXMLDocumentController implements Initializable {
         
         System.out.println("Enter Name:");
         String name = input.next();
+         
+      
+        System.out.println("Are you Active: TRUE or FALSE");
+        Boolean active =  input.nextBoolean();
         
-        
-        System.out.println("Are you active? Yes or No");
-        String ans;
-        ans = input.nextLine();
-        boolean active = false;
-        
-        if (ans.equalsIgnoreCase("Y") || ans.equalsIgnoreCase("Yes")){
-        active = true;
-        
-        }
-        else if(ans.equalsIgnoreCase("N") || ans.equalsIgnoreCase("No")) {
-            
-        active = false;
-
-        return;
-        }
         
         // create a student instance      
         List<Usermodel> user =  readByNameAndActivity(name, active);
 
-    }
-
-
     
+
+
+   }
 
     @FXML
     void readUser(ActionEvent event) {
@@ -355,23 +339,9 @@ public class FXMLDocumentController implements Initializable {
         System.out.println("Enter Name:");
         String name = input.next();
         
-        System.out.println("Are you active? Yes or No");
-        String ans;
-        ans = input.nextLine();
-        boolean active = false;
-        
-        if (ans.equalsIgnoreCase("y") || ans.equalsIgnoreCase("yes")){
-        active = true;
-        
-        }
-        else if(ans.equalsIgnoreCase("N") || ans.equalsIgnoreCase("No")) {
-            
-        active = false;
-
-        return;
-        }
-        
-         
+     
+        System.out.println("Are you Active: TRUE or FALSE");
+        Boolean active =  input.nextBoolean();
         
         // create a student instance
         Usermodel user = new Usermodel();
@@ -385,9 +355,22 @@ public class FXMLDocumentController implements Initializable {
         update(user);
 
     }
+    /*
+    Boolean returnBoolean(String string){
+        Boolean bool = null;
+        if (string == "yes"|| string == "Yes"){
+           bool = true; 
+        }
+        if (string == "no"|| string == "No"){
+            bool = false;
+        }
+        return bool;
+        
+    };
     
     
     
+    */
     
    
     
