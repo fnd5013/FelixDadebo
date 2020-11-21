@@ -123,19 +123,19 @@ public class FXMLDocumentController implements Initializable {
         
         return users ;
     } 
-      public Usermodel readByFollowers(int Followers){
+      public Usermodel readByFollowers(int followers){
         Query query = manager.createNamedQuery("Usermodel.findByFollowers");
         
         // setting query parameter
-        query.setParameter("Followers", Followers);
+        query.setParameter("Followers", followers);
         
         // execute query
-        Usermodel user = (Usermodel) query.getSingleResult();
-        if (user != null) {
-            System.out.println(user.getFollowers() + " " + user.getName() + " " + user.getActivity());
+        Usermodel u = (Usermodel) query.getSingleResult();
+        if (u != null) {
+            System.out.println(u.getFollowers() + " " + u.getName() + " " + u.getActivity());
         }
         
-        return user;
+        return u;
     }  
       public List<Usermodel> readByName(String name){
         Query query = manager.createNamedQuery("Usermodel.findByName");
@@ -411,13 +411,13 @@ public class FXMLDocumentController implements Initializable {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/DetailModelView.fxml"));
 
         // load the ui elements
-        Parent detailedModelView = loader.load();
+        Parent detailedModelView= loader.load();
 
         // load the scene
         Scene tableViewScene = new Scene(detailedModelView);
 
         //access the detailedControlled and call a method
-        DetailModelController detailedControlled = loader.getController();
+         DetailModelController detailedControlled = loader.getController();
 
 
         detailedControlled.initData(selectedUser);
@@ -433,9 +433,7 @@ public class FXMLDocumentController implements Initializable {
         stage.show();
     }
     
-    
-        //database reference: "IntroJavaFXPU"
-       
+        
 
     
         
@@ -498,14 +496,14 @@ public class FXMLDocumentController implements Initializable {
       Scanner input = new Scanner(System.in);
         
          // read input from command line
-        System.out.println("Enter Followers:");
-        int Followers = input.nextInt();
+        System.out.println("Enter Number of Followers:");
+        int followers = input.nextInt();
         
        
         
-        Usermodel s = readByFollowers(Followers);
-        System.out.println("we are deleting this student with this number of followers: "+ s.toString());
-        delete(s);
+        Usermodel u = readByFollowers(followers);
+        System.out.println("we are deleting this student with this number of followers: "+ u.toString());
+        delete(u);
 
     }
 
@@ -521,8 +519,8 @@ public class FXMLDocumentController implements Initializable {
         System.out.println("Enter Number of followers:");
         int Followers = input.nextInt();
         
-        Usermodel s = readByFollowers(Followers);
-        System.out.println(s.toString());
+        Usermodel u = readByFollowers(Followers);
+        System.out.println(u.toString());
 
     }
 

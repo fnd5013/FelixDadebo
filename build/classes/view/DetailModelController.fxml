@@ -15,9 +15,9 @@
 
 <AnchorPane id="AnchorPane" prefHeight="443.0" prefWidth="508.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DetailModelController">
    <children>
-      <VBox alignment="TOP_CENTER" prefHeight="443.0" prefWidth="508.0" spacing="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox  alignment="TOP_CENTER" prefHeight="443.0" prefWidth="508.0" spacing="40.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <HBox prefHeight="32.0" prefWidth="800.0">
+            <HBox fx:id="DetailedModelView" prefHeight="32.0" prefWidth="800.0">
                <children>
                   <Button fx:id="backButton" mnemonicParsing="false" onAction="#backButtonAction" prefHeight="27.0" prefWidth="90.0" text="Back">
                      <opaqueInsets>
@@ -43,12 +43,12 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label text="Student ID">
+                  <Label text="Followers:">
                      <font>
                         <Font name="System Bold Italic" size="18.0" />
                      </font>
                   </Label>
-                  <Label text="Name" GridPane.rowIndex="1">
+                  <Label text="Name:" GridPane.rowIndex="1">
                      <font>
                         <Font name="System Bold Italic" size="18.0" />
                      </font>
