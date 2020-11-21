@@ -5,7 +5,9 @@
  */
 package controller;
 
+import java.io.IOException;
 import java.net.URL;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
@@ -18,6 +20,22 @@ import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import java.lang.Boolean;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import model.Usermodel;
 /**
  *
@@ -43,16 +61,36 @@ public class FXMLDocumentController implements Initializable {
         }           
 
         
-    }
+    } 
+    
     
     EntityManager manager;
    
   
+    @Override
     public void initialize(URL url, ResourceBundle rb) {        
         // loading data from database
-        //database reference: "IntroJavaFXPU"
+        //database reference: "IntroJavaFXPU"     
         manager = (EntityManager) Persistence.createEntityManagerFactory("FelixDadeboPU").createEntityManager();
-    }    
+         //database reference: "IntroJavaFXPU"
+
+        
+        StudentName.setCellValueFactory(new PropertyValueFactory<>("Name"));
+        StudentFollowers.setCellValueFactory(new PropertyValueFactory<>("Followers"));
+
+        StudentActivity.setCellValueFactory(new PropertyValueFactory<>("Activity"));
+
+        //enable row selection
+        //(SelectionMode.MULTIPLE);
+        UserTable.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+   
+    }
+
+    
+
+      
+
+       
     // Create operation
     public void create(Usermodel user) {
         try {
@@ -77,14 +115,14 @@ public class FXMLDocumentController implements Initializable {
     
      public List<Usermodel> readAll(){
         Query query = manager.createNamedQuery("Usermodel.findAll");
-        List<Usermodel> students = query.getResultList();
+        List<Usermodel> users = query.getResultList();
 
-        for (Usermodel s : students) {
+        for (Usermodel s : users) {
             System.out.println(s.getFollowers() + " " + s.getName() + " " + s.getActivity());
         }
         
-        return students;
-    }
+        return users ;
+    } 
       public Usermodel readByFollowers(int Followers){
         Query query = manager.createNamedQuery("Usermodel.findByFollowers");
         
@@ -129,7 +167,41 @@ public class FXMLDocumentController implements Initializable {
         }
         
         return user;
-    }        
+    }     
+      public List<Usermodel> readByAndActivity(boolean activity){
+        Query query = manager.createNamedQuery("Usermodel.findByActivity");
+        
+        // setting query parameter
+        query.setParameter("activity", activity);
+        
+        
+        // execute query
+        List<Usermodel> user =  query.getResultList();
+        for (Usermodel u: user) {
+            System.out.println(u.getFollowers() + " " + u.getName() + " " + u.getActivity());
+        }
+        
+        return user;
+    }      
+       
+      
+      public List<Usermodel> readByNameAdvanced(String name) {
+        Query query = manager.createNamedQuery("Usermodel.findByNameAdvanced");
+
+        // setting query parameter
+        query.setParameter("name", name);
+
+        // execute query
+        List<Usermodel> user = query.getResultList();
+        for (Usermodel u : user) {
+            System.out.println(u.getFollowers() + " " + u.getName() + " " + u.getActivity());
+        }
+
+        return user;
+    }
+      
+      
+
       
       // Update operation
     public void update(Usermodel model) {
@@ -174,6 +246,7 @@ public class FXMLDocumentController implements Initializable {
         }
     }
     
+    
 
 
     
@@ -209,6 +282,181 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private Button buttonReadByNameactivity;
+    
+    @FXML
+    private TableView<Usermodel> UserTable;
+
+    @FXML
+    private TableColumn<Usermodel,Integer> StudentFollowers;
+
+    @FXML
+    private TableColumn<Usermodel, String> StudentName;
+
+    @FXML
+    private TableColumn<Usermodel, Boolean> StudentActivity;
+
+    @FXML
+    private Button searchButton;
+
+    @FXML
+    private TextField SearchField;
+    
+    private ObservableList<Usermodel> UserData;
+    public void setTableData(List<Usermodel> UserList) {
+
+        // initialize the studentData variable
+        UserData = FXCollections.observableArrayList();
+
+        // add the student objects to an observable list object for use with the GUI table
+        UserList.forEach(s -> {
+            UserData.add(s);
+        });
+
+        // set the the table items to the data in studentData; refresh the table
+        UserTable.setItems(UserData);
+        UserTable.refresh();
+    }
+    
+      @FXML
+      void searchByNameAction(ActionEvent event) {
+        System.out.println("clicked");
+
+        // getting the name from input box        
+        String name = SearchField.getText();
+
+        // calling a db read operaiton, readByName
+        List<Usermodel> user = readByName(name);
+
+        if (user == null || user.isEmpty()) {
+
+            // show an alert to inform user 
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Information Dialog Box");// line 2
+            alert.setHeaderText("This is header section to write heading");// line 3
+            alert.setContentText("No student");// line 4
+            alert.showAndWait(); // line 5
+        } else {
+
+            // setting table data
+            setTableData(user);
+        }
+    }
+       @FXML
+    void searchByNameAdvancedAction(ActionEvent event) {
+        System.out.println("clicked");
+
+        // getting the name from input box        
+        String name = SearchField.getText();
+
+        // calling a db read operaiton, readByName
+        List<Usermodel> user = readByNameAdvanced(name);
+
+        // setting table data
+        //setTableData(students);
+        // add an alert
+        if (user == null || user.isEmpty()) {
+
+            // show an alert to inform user 
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Information Dialog Box");// line 2
+            alert.setHeaderText("This is header section to write heading");// line 3
+            alert.setContentText("No student");// line 4
+            alert.showAndWait(); // line 5
+        } else {
+            // setting table data
+            setTableData(user);
+        }
+
+    }
+    
+    @FXML
+    void actionShowDetails(ActionEvent event) throws IOException {
+        System.out.println("clicked");
+
+        
+        // pass currently selected model
+        Usermodel selectedUser = UserTable.getSelectionModel().getSelectedItem();
+        
+        // fxml loader
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/DetailModelView.fxml"));
+
+        // load the ui elements
+        Parent detailedModelView = loader.load();
+
+        // load the scene
+        Scene tableViewScene = new Scene(detailedModelView);
+
+        //access the detailedControlled and call a method
+        DetailModelController detailedControlled = loader.getController();
+
+
+        detailedControlled.initData(selectedUser);
+
+        // create a new state
+        Stage stage = new Stage();
+        stage.setScene(tableViewScene);
+        stage.show();
+
+    }
+    
+     @FXML
+    void actionShowDetailsInPlace(ActionEvent event) throws IOException {
+        System.out.println("clicked");
+
+       
+        Usermodel selectedUser = UserTable.getSelectionModel().getSelectedItem();
+
+        
+        // fxml loader
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/DetailModelView.fxml"));
+
+        // load the ui elements
+        Parent detailedModelView = loader.load();
+
+        // load the scene
+        Scene tableViewScene = new Scene(detailedModelView);
+
+        //access the detailedControlled and call a method
+        DetailModelController detailedControlled = loader.getController();
+
+
+        detailedControlled.initData(selectedUser);
+
+        // pass current scene to return
+        Scene currentScene = ((Node) event.getSource()).getScene();
+        detailedControlled.setPreviousScene(currentScene);
+
+        //This line gets the Stage information
+        Stage stage = (Stage) currentScene.getWindow();
+
+        stage.setScene(tableViewScene);
+        stage.show();
+    }
+    
+    
+        //database reference: "IntroJavaFXPU"
+       
+
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+   
+        
+    
 
     @FXML
     void createUser(ActionEvent event) {
@@ -371,6 +619,11 @@ public class FXMLDocumentController implements Initializable {
     
     
     */
+   
+
+    
+    
+
     
    
     

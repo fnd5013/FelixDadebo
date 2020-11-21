@@ -28,6 +28,11 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Usermodel.findByName", query = "SELECT u FROM Usermodel u WHERE u.name = :name")
     , @NamedQuery(name = "Usermodel.findByActivity", query = "SELECT u FROM Usermodel u WHERE u.activity = :activity")
     , @NamedQuery(name = "Usermodel.findByNameAndActivity", query = "SELECT u FROM Usermodel u WHERE u.name = :name and u.activity = :activity")
+    , @NamedQuery(name = "Usermodel.findByNameAdvanced", query = "SELECT u FROM Usermodel u WHERE  LOWER(u.name) LIKE  CONCAT('%', LOWER(:name), '%')")
+  //  , @NamedQuery(name = "Usermodel.findByCgpaInBetween", query = "SELECT u FROM Usermodel u WHERE  u.cgpa >= :cgpa_low AND u.cgpa <= :cgpa_high ")
+
+
+        
     })
 
 
